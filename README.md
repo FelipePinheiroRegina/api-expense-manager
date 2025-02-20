@@ -21,6 +21,7 @@
 
 
 # Estrutura de projeto 
+```
 /meu-projeto
 │── /src
 │   ├── /config          # Configurações (ex: .env, conexões)
@@ -39,3 +40,4 @@
 │── .gitignore           # Arquivos a serem ignorados pelo Git
 │── package.json         # Dependências e scripts do projeto
 │── README.md            # Documentação do projeto
+```
