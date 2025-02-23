@@ -1,16 +1,13 @@
 import bcrypt from 'bcrypt'
 import { UserRepositories } from '@/repositories/user-repositories'
 import { AppError } from '@/errors/app-error'
-import { IUser } from '@/@types/user'
+import { TschemaUserRegister } from '@/routes/user-routes'
 
-export async function userRegisterService({ name, email, password }: IUser) {
-  if (!name || !email || !password) {
-    throw new AppError(
-      'name, email, password are required to registered a user',
-      411,
-    )
-  }
-
+export async function userRegisterService({
+  name,
+  email,
+  password,
+}: TschemaUserRegister) {
   const emailAlreadyExists = await UserRepositories.findByEmail({ email })
 
   if (emailAlreadyExists) {

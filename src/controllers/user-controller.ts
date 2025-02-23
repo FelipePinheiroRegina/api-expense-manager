@@ -1,9 +1,9 @@
 import { FastifyRequest, FastifyReply } from 'fastify'
 import { userRegisterService } from '@/services/user/user-register-service'
-import { TSBodyRegisterUser } from '@/routes/user-routes'
+import { TschemaUserRegister } from '@/routes/user-routes'
 export class UserController {
   static async register(
-    request: FastifyRequest<{ Body: TSBodyRegisterUser }>,
+    request: FastifyRequest<{ Body: TschemaUserRegister }>,
     reply: FastifyReply,
   ) {
     const { name, email, password } = request.body

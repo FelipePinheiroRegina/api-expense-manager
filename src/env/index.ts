@@ -7,6 +7,9 @@ const envSchema = z.object({
   CLIENT_ID: z.string(),
   CLIENT_SECRET: z.string(),
   SECRET_KEY_COOKIE: z.string(),
+  API_CLOUD_NAME: z.string(),
+  API_CLOUD_KEY: z.string(),
+  API_CLOUD_SECRET: z.string(),
 })
 
 const _env = envSchema.safeParse(process.env)

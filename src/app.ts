@@ -12,6 +12,7 @@ import {
 } from 'fastify-type-provider-zod'
 import { fastifySwagger } from '@fastify/swagger'
 import { fastifySwaggerUi } from '@fastify/swagger-ui'
+import { fastifyMultipart } from '@fastify/multipart'
 
 export const app = fastify().withTypeProvider<ZodTypeProvider>()
 app.setValidatorCompiler(validatorCompiler)
@@ -35,6 +36,7 @@ app.register(fastifySwaggerUi, {
   routePrefix: '/docs',
 })
 
-githubOauthPlugin(app)
+app.register(fastifyMultipart)
+app.register(githubOauthPlugin)
 app.register(AppRoutes)
 app.setErrorHandler(errorHandler)
