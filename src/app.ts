@@ -21,7 +21,7 @@ app.setSerializerCompiler(serializerCompiler)
 app.register(fastifySwagger, {
   openapi: {
     info: {
-      title: 'Api auto document',
+      title: 'API EXPENSE MANAGER',
       version: '1.0.0',
     },
   },

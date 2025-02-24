@@ -2,7 +2,7 @@ import { FastifyTypedInstance } from '@/@types/fastify-typed-instance'
 import { UserController } from '@/controllers/user-controller'
 import { AppError } from '@/errors/app-error'
 import { z } from 'zod'
-import { v2 as cloudinary } from 'cloudinary'
+import { v2 as cloudinary, UploadApiResponse } from 'cloudinary'
 import { env } from '@/env'
 
 cloudinary.config({
@@ -24,7 +24,7 @@ export function userRoutes(app: FastifyTypedInstance) {
     '/register',
     {
       schema: {
-        tags: ['users'],
+        tags: ['user'],
         description: 'Route to create a new user',
         body: schemaUserRegister,
         response: {
@@ -39,36 +39,53 @@ export function userRoutes(app: FastifyTypedInstance) {
   )
 
   app.post('/upload/avatar', async (req, reply) => {
+    const data = await req.file()
+
+    if (data === undefined) {
+      return reply.status(400).send()
+    }
+
+    const uploadPromise = new Promise<UploadApiResponse>((resolve, reject) => {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        {
+          folder: 'avatars',
+        },
+        (error, result) => {
+          if (error) {
+            reject(error)
+          } else {
+            resolve(result)
+          }
+        },
+      )
+
+      data.file.pipe(uploadStream)
+    })
+
     try {
-      const data = await req.file()
-
-      if (data === undefined) {
-        return reply.status(400).send()
-      }
-
-      const buffer = await data.toBuffer()
-
-      cloudinary.uploader
-        .upload_stream(
+      const results = await uploadPromise
+      const optimizeUrl = cloudinary.url(results.public_id, {
+        transformation: [
           {
-            public_id: `avatars/${data.filename}`,
-            resource_type: 'image',
-            folder: 'avatars',
+            fetch_format: 'auto',
+            quality: 'auto',
           },
-          (error, result) => {
-            if (error) {
-              return reply
-                .status(500)
-                .send({ error: 'Error uploading to Cloudinary' })
-            }
-            console.log(result)
-            reply.send(result)
+          {
+            width: 128,
+            height: 128,
           },
-        )
-        .end(buffer)
+        ],
+      })
+      console.log(optimizeUrl)
+      reply.send(results)
     } catch (error) {
       console.error(error)
-      reply.status(500).send({ error: 'Error processing file' })
+      reply.status(500).send()
     }
+  })
+
+  app.post('/destroy/avatar', async (req, reply) => {
+    await cloudinary.uploader.destroy('avatars/avatars/fe-blue.jpg')
+    reply.send('apagado')
   })
 }

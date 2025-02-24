@@ -1,4 +1,4 @@
-import { IUserDB, IUser } from '@/@types/user'
+import { IUserDB } from '@/@types/user'
 import { prisma } from '@/lib/prisma'
 
 export class UserRepositories {
@@ -16,7 +16,7 @@ export class UserRepositories {
     })
   }
 
-  static async findByEmail({ email }: Pick<IUser, 'email'>) {
+  static async findByEmail({ email }: Pick<IUserDB, 'email'>) {
     return await prisma.user.findUnique({ where: { email } })
   }
 }

@@ -17,26 +17,6 @@ async function githubOauthFunction(app: FastifyTypedInstance) {
     startRedirectPath: '/auth/github',
     callbackUri: 'http://localhost:3000/auth/github/callback',
   })
-
-  app.get(
-    '/login/github',
-    {
-      schema: {
-        tags: ['auth'],
-        description: 'Route to redirect user to login of the github',
-      },
-    },
-    (req, reply) => {
-      app.githubOAuth2.generateAuthorizationUri(
-        req,
-        reply,
-        (err, authorizationEndpoint) => {
-          if (err) console.error(err)
-          reply.redirect(authorizationEndpoint)
-        },
-      )
-    },
-  )
 }
 
 export const githubOauthPlugin = fp(githubOauthFunction)
