@@ -1,7 +1,7 @@
 # Requisitos funcionais
 
 - [x] deve ser possivel se cadastrar.
-- [x] deve ser possivel fazer o login. 
+- [x] deve ser possivel fazer o login.
 - [x] deve ser possivel fazer o login com uam conta github
 - [] deve ser possivel fazer login com uma conta google
 - OBS.:(Pesquisar para saber como buscar as informações da conta github e google para salvar no banco)

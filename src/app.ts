@@ -1,8 +1,10 @@
 import fastify from 'fastify'
+import { fastifyCookie } from '@fastify/cookie'
+import { fastifyJwt } from '@fastify/jwt'
+
 import { AppRoutes } from './routes/index'
-import { errorHandler } from './middlewares/error-handler'
 import { githubOauthPlugin } from './plugins/github-oauth'
-import cookie from '@fastify/cookie'
+
 import { env } from './env'
 import {
   validatorCompiler,
@@ -13,6 +15,7 @@ import {
 import { fastifySwagger } from '@fastify/swagger'
 import { fastifySwaggerUi } from '@fastify/swagger-ui'
 import { fastifyMultipart } from '@fastify/multipart'
+import { ZodError } from 'zod'
 
 export const app = fastify().withTypeProvider<ZodTypeProvider>()
 app.setValidatorCompiler(validatorCompiler)
@@ -28,15 +31,41 @@ app.register(fastifySwagger, {
   transform: jsonSchemaTransform,
 })
 
-app.register(cookie, {
-  secret: env.SECRET_KEY_COOKIE,
+app.register(fastifyJwt, {
+  secret: env.JWT_SECRET,
+  sign: {
+    expiresIn: '10m',
+  },
 })
+
+app.register(fastifyCookie)
 
 app.register(fastifySwaggerUi, {
   routePrefix: '/docs',
 })
 
-app.register(fastifyMultipart)
+app.register(fastifyMultipart, {
+  limits: {
+    fileSize: 5 * 1024 * 1024,
+  },
+})
+
 app.register(githubOauthPlugin)
 app.register(AppRoutes)
-app.setErrorHandler(errorHandler)
+
+app.setErrorHandler((error, _, reply) => {
+  if (error instanceof ZodError) {
+    return reply.status(400).send({
+      message: 'Validation error.',
+      issues: error.format(),
+    })
+  }
+
+  if (env.NODE_ENV !== 'production') {
+    console.error(error)
+  } else {
+    // TODO: Here we should log to an external tool like DataDog/NewRelic/Sentry
+  }
+
+  return reply.status(500).send({ message: 'Internal server error.' })
+})

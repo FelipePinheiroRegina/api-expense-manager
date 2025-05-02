@@ -6,7 +6,7 @@ const envSchema = z.object({
   SERVER_PORT: z.coerce.number().default(3000),
   CLIENT_ID: z.string(),
   CLIENT_SECRET: z.string(),
-  SECRET_KEY_COOKIE: z.string(),
+  JWT_SECRET: z.string(),
   API_CLOUD_NAME: z.string(),
   API_CLOUD_KEY: z.string(),
   API_CLOUD_SECRET: z.string(),
