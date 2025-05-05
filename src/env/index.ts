@@ -4,8 +4,9 @@ import { z } from 'zod'
 const envSchema = z.object({
   NODE_ENV: z.enum(['dev', 'production', 'test']).default('dev'),
   SERVER_PORT: z.coerce.number().default(3000),
-  CLIENT_ID: z.string(),
-  CLIENT_SECRET: z.string(),
+  GITHUB_CLIENT_ID: z.string(),
+  GITHUB_CLIENT_SECRET: z.string(),
+  GITHUB_API_URL: z.string().url(),
   JWT_SECRET: z.string(),
   API_CLOUD_NAME: z.string(),
   API_CLOUD_KEY: z.string(),

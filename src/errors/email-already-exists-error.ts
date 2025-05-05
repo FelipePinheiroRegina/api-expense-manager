@@ -5,4 +5,8 @@ export class EmailAlreadyExistsError extends Error {
     super('E-mail already exists.')
     this.statusCode = 409
   }
+
+  getStatusCode() {
+    return this.statusCode
+  }
 }

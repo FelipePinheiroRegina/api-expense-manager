@@ -2,7 +2,7 @@ import fastify from 'fastify'
 import { fastifyCookie } from '@fastify/cookie'
 import { fastifyJwt } from '@fastify/jwt'
 
-import { AppRoutes } from './routes/index'
+import { AppRoutes } from '@/http/routes'
 import { githubOauthPlugin } from './plugins/github-oauth'
 
 import { env } from './env'
@@ -15,7 +15,6 @@ import {
 import { fastifySwagger } from '@fastify/swagger'
 import { fastifySwaggerUi } from '@fastify/swagger-ui'
 import { fastifyMultipart } from '@fastify/multipart'
-import { ZodError } from 'zod'
 
 export const app = fastify().withTypeProvider<ZodTypeProvider>()
 app.setValidatorCompiler(validatorCompiler)
@@ -54,10 +53,10 @@ app.register(githubOauthPlugin)
 app.register(AppRoutes)
 
 app.setErrorHandler((error, _, reply) => {
-  if (error instanceof ZodError) {
+  if (error.code === 'FST_ERR_VALIDATION') {
     return reply.status(400).send({
       message: 'Validation error.',
-      issues: error.format(),
+      issues: error?.validation ? error.validation[0].message : '',
     })
   }
 

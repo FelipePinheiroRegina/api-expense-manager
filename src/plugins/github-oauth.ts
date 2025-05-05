@@ -6,16 +6,17 @@ import { env } from '@/env'
 async function githubOauthFunction(app: FastifyTypedInstance) {
   app.register(fastifyOauth2, {
     name: 'githubOAuth2',
-    scope: [],
+    scope: ['read:user', 'user:email'],
     credentials: {
       client: {
-        id: env.CLIENT_ID,
-        secret: env.CLIENT_SECRET,
+        id: env.GITHUB_CLIENT_ID,
+        secret: env.GITHUB_CLIENT_SECRET,
       },
       auth: fastifyOauth2.GITHUB_CONFIGURATION,
     },
-    startRedirectPath: '/auth/github',
-    callbackUri: 'http://localhost:3000/auth/github/callback',
+    startRedirectPath: '/users/sessions/github',
+    callbackUri: 'http://localhost:3000/users/sessions/github/callback',
+    tags: ['users'],
   })
 }
 
