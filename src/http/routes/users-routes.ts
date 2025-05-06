@@ -36,7 +36,9 @@ export function usersRoutes(app: FastifyTypedInstance) {
         description: 'Route to traditional login with email and password',
         body: userSessionsTraditionalSchema,
         response: {
-          201: z.null(),
+          200: z.object({
+            access_token: z.string(),
+          }),
         },
       },
     },

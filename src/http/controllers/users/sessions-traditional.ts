@@ -29,15 +29,7 @@ export async function sessionsTraditional(
       },
     )
 
-    return reply
-      .setCookie('access_token', access_token, {
-        path: '/',
-        httpOnly: true,
-        secure: true,
-        sameSite: true,
-      })
-      .status(201)
-      .send()
+    return reply.status(201).send({ access_token })
   } catch (error) {
     if (error instanceof ResourceNotFoundError) {
       const statusCode = error.getStatusCode()

@@ -14,9 +14,49 @@ model User {
   avatar        String?
   password_hash String?
 
-  provider      String?
-  provider_id   String? @unique
+  provider    String?
+  provider_id String? @unique
+
+  created_at  DateTime      @default(now())
+  updated_at  DateTime      @updatedAt
+  Transaction Transaction[]
+
+  @@map("users")
+}
+
+enum Type {
+  INCOME
+  OUTCOME
+}
+
+model Transaction {
+  id          String  @id @default(uuid())
+  title       String
+  description String?
+  type        Type
+  amount      Int
 
   created_at DateTime @default(now())
-  updated_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  user_id String
+
+  user     User       @relation(fields: [user_id], references: [id])
+  Category Category[]
+
+  @@map("transactions")
+}
+
+model Category {
+  id   String @id @default(uuid())
+  name String
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  transaction_id String
+
+  transaction Transaction[]
+
+  @@map("categories")
 }

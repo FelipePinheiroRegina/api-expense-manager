@@ -118,14 +118,7 @@ export async function sessionsGithub(
       },
     )
 
-    reply.setCookie('access_token', access_token, {
-      path: '/',
-      httpOnly: true,
-      secure: true,
-      sameSite: 'lax',
-    })
-
-    reply.redirect(env.FRONTEND_URL)
+    reply.redirect(`${env.FRONTEND_URL}?access_token=${access_token}`)
   } catch (error) {
     if (error instanceof InvalidToken) {
       const statusCode = error.getStatusCode()

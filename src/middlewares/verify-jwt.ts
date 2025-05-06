@@ -5,7 +5,7 @@ export async function authMiddleware(
   reply: FastifyReply,
 ) {
   try {
-    await request.jwtVerify({ onlyCookie: true })
+    await request.jwtVerify()
   } catch {
     return reply.status(401).send({ message: 'Unauthorized' })
   }

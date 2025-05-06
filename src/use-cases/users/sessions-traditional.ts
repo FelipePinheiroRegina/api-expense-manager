@@ -2,7 +2,7 @@ import { ResourceNotFoundError } from '@/errors/resource-not-found-error'
 import { UnauthorizedError } from '@/errors/unauthorized-error'
 import { UsersRepository } from '@/repositories/users-repository'
 import { User } from '@prisma/client'
-import bcryptjs from 'bcryptjs'
+import { compare } from 'bcryptjs'
 
 interface SessionsTraditionalUseCaseRequest {
   email: string
@@ -22,11 +22,11 @@ export class SessionsTraditionalUseCase {
   }: SessionsTraditionalUseCaseRequest): Promise<SessionsTraditionalUseCaseResponse> {
     const user = await this.userRepositories.findByEmail(email)
 
-    if (!user) {
+    if (!user || !user.password_hash) {
       throw new ResourceNotFoundError()
     }
 
-    const passwordMatches = await bcryptjs.compare(password, user.password_hash)
+    const passwordMatches = await compare(password, user.password_hash)
 
     if (!passwordMatches) {
       throw new UnauthorizedError()
