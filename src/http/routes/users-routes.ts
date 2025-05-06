@@ -49,9 +49,6 @@ export function usersRoutes(app: FastifyTypedInstance) {
       schema: {
         tags: ['users'],
         description: 'Route to redirect after github login',
-        response: {
-          201: z.null(),
-        },
       },
     },
     sessionsGithub,

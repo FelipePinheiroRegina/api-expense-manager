@@ -4,6 +4,7 @@ import { apiGithub } from '@/lib/axios'
 import { ResourceNotFoundError } from '@/errors/resource-not-found-error'
 import { InvalidToken } from '@/errors/invalid-token-error'
 import { makeRegisterProviderUseCase } from '@/use-cases/factories/users/make-register-provider-use-case'
+import { env } from '@/env'
 
 export interface UserGithub {
   login: string
@@ -68,17 +69,17 @@ export async function sessionsGithub(
   reply: FastifyReply,
 ) {
   try {
-    const { access_token } = (
+    const githubToken = (
       await app.githubOAuth2.getAccessTokenFromAuthorizationCodeFlow(request)
-    ).token
+    ).token.access_token
 
-    if (!access_token) {
+    if (!githubToken) {
       throw new InvalidToken()
     }
 
     const { data: userGithub } = await apiGithub.get<UserGithub>('user', {
       headers: {
-        Authorization: `Bearer ${access_token}`,
+        Authorization: `Bearer ${githubToken}`,
       },
     })
 
@@ -86,7 +87,7 @@ export async function sessionsGithub(
       'user/emails',
       {
         headers: {
-          Authorization: `Bearer ${access_token}`,
+          Authorization: `Bearer ${githubToken}`,
         },
       },
     )
@@ -97,7 +98,7 @@ export async function sessionsGithub(
 
     const registerProviderUseCase = makeRegisterProviderUseCase()
 
-    await registerProviderUseCase.execute({
+    const { user } = await registerProviderUseCase.execute({
       email: emailsGithub[0].email,
       name: userGithub.name ?? userGithub.login,
       password: null,
@@ -106,10 +107,25 @@ export async function sessionsGithub(
       provider_id: userGithub.id.toString(),
     })
 
-    console.log(userGithub)
-    console.log(emailsGithub)
+    const access_token = await reply.jwtSign(
+      {
+        //role: user.role,
+      },
+      {
+        sign: {
+          sub: user.id,
+        },
+      },
+    )
 
-    reply.redirect('http://localhost:5173')
+    reply.setCookie('access_token', access_token, {
+      path: '/',
+      httpOnly: true,
+      secure: true,
+      sameSite: 'lax',
+    })
+
+    reply.redirect(env.FRONTEND_URL)
   } catch (error) {
     if (error instanceof InvalidToken) {
       const statusCode = error.getStatusCode()

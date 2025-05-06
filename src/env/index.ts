@@ -11,6 +11,7 @@ const envSchema = z.object({
   API_CLOUD_NAME: z.string(),
   API_CLOUD_KEY: z.string(),
   API_CLOUD_SECRET: z.string(),
+  FRONTEND_URL: z.string(),
 })
 
 const _env = envSchema.safeParse(process.env)
