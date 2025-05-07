@@ -3,19 +3,19 @@ import { UsersRepository } from '@/repositories/users-repository'
 import { ResourceNotFoundError } from '@/errors/resource-not-found-error'
 import { CategoriesRepository } from '@/repositories/categories-repository'
 import { CategoriesOnTransactionsRepository } from '@/repositories/categories-on-transactions-repository'
-interface CreateTransactionUseCaseRequest {
-  data: TransactionCreateDTO
-  userId: string
-  categoriesId: string[]
+interface UpdateTransactionUseCaseRequest {
+  data: TransactionDTO
+  transactionId: string
+  categoriesId?: string[]
 }
 
-interface CreateTransactionUseCaseResponse {
+interface UpdateTransactionUseCaseResponse {
   transaction: TransactionDTO
   categories: CategoryDTO[]
   categoriesOnTransactions: CategoryOnTransactionDTO[]
 }
 
-export class CreateTransactionUseCase {
+export class UpdateTransactionUseCase {
   constructor(
     private transactionsRepository: TransactionsRepository,
     private usersRepository: UsersRepository,
@@ -25,38 +25,41 @@ export class CreateTransactionUseCase {
 
   async execute({
     data,
-    userId,
+    transactionId,
     categoriesId,
-  }: CreateTransactionUseCaseRequest): Promise<CreateTransactionUseCaseResponse> {
-    const user = await this.usersRepository.findById(userId)
+  }: UpdateTransactionUseCaseRequest): Promise<UpdateTransactionUseCaseResponse> {
+    const nonExistsTransaction =
+      await this.transactionsRepository.findById(transactionId)
+
     const categories = (
       await Promise.all(
-        categoriesId.map((category) =>
+        (categoriesId ?? []).map((category) =>
           this.categoriesRepository.findById(category),
         ),
       )
     ).filter((cat) => cat != null)
 
-    if (!user) {
+    if (nonExistsTransaction) {
       throw new ResourceNotFoundError()
     }
 
-    if (categories.length === 0) {
-      throw new ResourceNotFoundError()
+    const transaction = await this.transactionsRepository.update(
+      data,
+      transactionId,
+    )
+
+    if (categories.length > 0) {
+      const categoriesOnTransactionsInsert: CategoryOnTransactionDTO[] =
+        categories.map((category) => {
+          return {
+            category_id: category.id,
+            transaction_id: transaction.id,
+          }
+        })
     }
-
-    const transaction = await this.transactionsRepository.create(data, userId)
-
-    const categoriesOnTransactionsInsert: CategoryOnTransactionCreateDTO[] =
-      categories.map((category) => {
-        return {
-          category_id: category.id,
-          transaction_id: transaction.id,
-        }
-      })
 
     const categoriesOnTransactions =
-      await this.categoriesOnTransactionsRepository.createMany(
+      await this.categoriesOnTransactionsRepository.updateMany(
         categoriesOnTransactionsInsert,
       )
 

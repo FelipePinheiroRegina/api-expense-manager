@@ -1,5 +1,4 @@
 import bcrypt from 'bcryptjs'
-import { User } from '@prisma/client'
 import { UsersRepository } from '@/repositories/users-repository'
 import { EmailAlreadyExistsError } from '@/errors/email-already-exists-error'
 
@@ -10,7 +9,7 @@ interface RegisterUseCaseRequest {
 }
 
 interface RegisterUseCaseResponse {
-  user: User
+  user: UserDTO
 }
 
 export class RegisterUseCase {

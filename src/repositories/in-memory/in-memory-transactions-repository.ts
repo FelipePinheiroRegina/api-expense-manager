@@ -1,18 +1,15 @@
-import { Transaction } from '@prisma/client'
-import {
-  CreateTransaction,
-  TransactionsRepository,
-} from '../transactions-repository'
+import { TransactionsRepository } from '../transactions-repository'
 import { randomUUID } from 'node:crypto'
 
 export class InMemoryTransactionsRepository implements TransactionsRepository {
-  public transactions: Transaction[] = []
-  async create({ data, userId }: CreateTransaction) {
-    const transaction: Transaction = {
+  public transactions: TransactionDTO[] = []
+
+  async create(data: TransactionCreateDTO, userId: string) {
+    const transaction = {
       id: randomUUID(),
       title: data.title,
       type: data.type,
-      amount: data.amount,
+      amount_in_cents: data.amount_in_cents,
       description: data.description ?? null,
 
       user_id: userId,
@@ -24,5 +21,21 @@ export class InMemoryTransactionsRepository implements TransactionsRepository {
     this.transactions.push(transaction)
 
     return transaction
+  }
+
+  async update(data: TransactionCreateDTO, transactionId: string) {
+    const index = this.transactions.findIndex((t) => t.id === transactionId)
+
+    this.transactions[index] = {
+      ...this.transactions[index],
+      ...data,
+    }
+
+    return this.transactions[index]
+  }
+
+  async findById(transactionId: string) {
+    const transaction = this.transactions.find((t) => t.id === transactionId)
+    return transaction ?? null
   }
 }

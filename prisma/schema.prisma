@@ -30,33 +30,45 @@ enum Type {
 }
 
 model Transaction {
-  id          String  @id @default(uuid())
-  title       String
-  description String?
-  type        Type
-  amount      Int
+  id              String  @id @default(uuid())
+  title           String
+  description     String?
+  type            Type
+  amount_in_cents Int
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
+  user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
   user_id String
 
-  user     User       @relation(fields: [user_id], references: [id])
-  Category Category[]
+  categories CategoryOnTransaction[]
 
   @@map("transactions")
+}
+
+model CategoryOnTransaction {
+  transaction_id String
+  category_id    String
+
+  transaction Transaction @relation(fields: [transaction_id], references: [id], onDelete: Cascade)
+  category    Category    @relation(fields: [category_id], references: [id], onDelete: Cascade)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@id([transaction_id, category_id])
+  @@map("category_on_transaction")
 }
 
 model Category {
   id   String @id @default(uuid())
   name String
 
+  transactions CategoryOnTransaction[]
+
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
-
-  transaction_id String
-
-  transaction Transaction[]
 
   @@map("categories")
 }

@@ -1,4 +1,3 @@
-import { User } from '@prisma/client'
 import { UsersRepository } from '@/repositories/users-repository'
 
 interface RegisterProviderUseCaseRequest {
@@ -11,7 +10,7 @@ interface RegisterProviderUseCaseRequest {
 }
 
 interface RegisterProviderUseCaseResponse {
-  user: User
+  user: UserDTO
 }
 
 export class RegisterProviderUseCase {
