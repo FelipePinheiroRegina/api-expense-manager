@@ -3,7 +3,7 @@ import { UsersRepository } from '@/repositories/users-repository'
 import { ResourceNotFoundError } from '@/errors/resource-not-found-error'
 import { CategoriesRepository } from '@/repositories/categories-repository'
 import { CategoriesOnTransactionsRepository } from '@/repositories/categories-on-transactions-repository'
-import { RelationsAlreadyExistsError } from '@/errors/relations-already-exists-error copy'
+import { RelationsAlreadyExistsError } from '@/errors/relations-already-exists-error'
 interface UpdateTransactionUseCaseRequest {
   data?: TransactionCreateDTO
   transactionId: string

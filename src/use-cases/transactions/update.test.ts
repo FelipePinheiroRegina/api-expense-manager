@@ -6,7 +6,7 @@ import { InMemoryTransactionsRepository } from '@/repositories/in-memory/in-memo
 import { InMemoryCategoriesOnTransactionsRepository } from '@/repositories/in-memory/in-memory-categories-on-transactions-repository'
 import { randomUUID } from 'node:crypto'
 import { ResourceNotFoundError } from '@/errors/resource-not-found-error'
-import { RelationsAlreadyExistsError } from '@/errors/relations-already-exists-error copy'
+import { RelationsAlreadyExistsError } from '@/errors/relations-already-exists-error'
 
 let usersRepository: InMemoryUsersRepository
 let categoriesRepository: InMemoryCategoriesRepository

@@ -7,6 +7,10 @@ export interface TransactionsRepository {
   ): Promise<TransactionDTO>
 
   findById(transactionId: string): Promise<TransactionDTO | null>
+  findByUserIdAndQtd(
+    userId: string,
+    qtd: number,
+  ): Promise<TransactionDTO[] | null>
 
   deleteById(transactionId: string): Promise<TransactionDTO>
 }
