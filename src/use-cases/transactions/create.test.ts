@@ -108,7 +108,6 @@ describe('Create Transaction Use Case', () => {
     categoriesOnTransactions.forEach((catOnTran) => {
       expect(catOnTran).toEqual(
         expect.objectContaining({
-          id: expect.any(String),
           category_id: expect.any(String),
           transaction_id: transaction.id,
           created_at: expect.any(Date),
@@ -164,20 +163,4 @@ describe('Create Transaction Use Case', () => {
       }),
     ).rejects.toBeInstanceOf(ResourceNotFoundError)
   })
-
-  //   it('should not be able to register twice same email', async () => {
-  //     await registerUseCase.execute({
-  //       name: 'John Doe',
-  //       email: 'jho@email.com',
-  //       password: '123456',
-  //     })
-
-  //     await expect(() =>
-  //       registerUseCase.execute({
-  //         name: 'John Doe',
-  //         email: 'jho@email.com',
-  //         password: '123456',
-  //       }),
-  //     ).rejects.toBeInstanceOf(EmailAlreadyExistsError)
-  //   })
 })

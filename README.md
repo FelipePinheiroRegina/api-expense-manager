@@ -7,21 +7,23 @@ spell-checker:disable
 - [x] deve ser possivel fazer o login com uam conta github
 
 - [] deve ser possivel fazer login com uma conta google
+- [] deve ser possivel listar os dados de um usuario
 - [] deve ser possivel alterar o perfil
 - [] deve ser possivel excluir o perfil
 
 - [x] deve ser possivel criar uma transaction
-- [] deve ser possivel alterar uma transaction
+- [x] deve ser possivel alterar uma transaction
 - [] deve ser possivel excluir uma transaction
+- [] deve ser possivel listar as 10 ultimas transactions
+- [] deve ser possivel listar todas as transactions
 
 - [] deve ser possivel criar uma category
+- [] deve ser possivel listar todas categorias
 - [] deve ser possivel alterar uma category
 - [] deve ser possivel excluir uma category
 
-- [] deve ser possivel listar as 10 ultimas transactions
-
 - [] deve ser possivel ver o total de incomes/mes
-- [] deve ser possivel ver o toal de outcomes/mes
+- [] deve ser possivel ver o total de outcomes/mes
 
 - [] deve ser possivel listar duas transactions e suas categorias com base no valor mais caro do mes atual e do mes anterior
 
@@ -32,5 +34,3 @@ spell-checker:disable
 FIXME: - [] deve ser possivel listar as tres transaction mais caras e quantas transactios foi feito para essa categoria.
 
 FIXME: - [] deve ser possivel listar todas as transaction e a quantidade que eu ja de transactions que eu ja fiz para cada uma
-
-# Estrutura de projeto
