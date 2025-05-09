@@ -49,6 +49,24 @@ export class InMemoryTransactionsRepository implements TransactionsRepository {
     return transactions.slice(0, qtd)
   }
 
+  async findAllByUserId(userId: string, page: number, pageSize: number) {
+    const userTransactions = this.transactions.filter(
+      (t) => t.user_id === userId,
+    )
+
+    if (userTransactions.length === 0) {
+      return null
+    }
+
+    const total = userTransactions.length
+    const start = (page - 1) * pageSize
+    const end = start + pageSize
+
+    const transactions = userTransactions.slice(start, end)
+
+    return { transactions, total }
+  }
+
   async deleteById(transactionId: string) {
     const index = this.transactions.findIndex((t) => t.id === transactionId)
     const [deletedTransaction] = this.transactions.splice(index, 1)
