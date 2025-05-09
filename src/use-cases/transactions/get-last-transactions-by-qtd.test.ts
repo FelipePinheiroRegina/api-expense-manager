@@ -26,6 +26,24 @@ describe('Get Last Transactions By Qtd Use Case', () => {
       email: 'user@1.com',
     })
 
+    const user2 = await usersRepository.register({
+      name: 'user-2',
+      email: 'user@2.com',
+    })
+
+    for (let c = 1; c <= 10; c++) {
+      transactionsRepository.transactions.push({
+        id: randomUUID(),
+        title: `Transaction-${c}`,
+        amount_in_cents: c * 10000,
+        type: 'INCOME',
+        description: null,
+        user_id: user2.id,
+        created_at: new Date(Date.now() + c * 1000),
+        updated_at: new Date(),
+      })
+    }
+
     for (let c = 1; c <= 10; c++) {
       transactionsRepository.transactions.push({
         id: randomUUID(),
@@ -59,194 +77,39 @@ describe('Get Last Transactions By Qtd Use Case', () => {
     }
   })
 
-  // it('should be able to update a transaction, add and remove some categories', async () => {
-  //   const transactionId = randomUUID()
-  //   transactionsRepository.transactions.push({
-  //     id: transactionId,
-  //     title: 'Transaction-1',
-  //     amount_in_cents: Math.round(100 * 100),
-  //     type: 'INCOME',
-  //     description: null,
+  it('should be able to limit the get if the user sends a qtd greater than 20', async () => {
+    const user = await usersRepository.register({
+      name: 'user-1',
+      email: 'user@1.com',
+    })
 
-  //     user_id: randomUUID(),
+    for (let c = 1; c <= 25; c++) {
+      transactionsRepository.transactions.push({
+        id: randomUUID(),
+        title: `Transaction-${c}`,
+        amount_in_cents: c * 10000,
+        type: 'INCOME',
+        description: null,
+        user_id: user.id,
+        created_at: new Date(Date.now() + c * 1000),
+        updated_at: new Date(),
+      })
+    }
 
-  //     created_at: new Date(),
-  //     updated_at: new Date(),
-  //   })
+    const { transactions } = await getLastTransactionsByQtd.execute({
+      userId: user.id,
+      qtd: 25,
+    })
 
-  //   const updateTransaction = {
-  //     title: 'Transaction-updated',
-  //     amount_in_cents: Math.round(500 * 100),
-  //     type: 'OUTCOME',
-  //     description: 'Transaction-updated',
-  //   }
+    expect(transactions).toHaveLength(20)
+  })
 
-  //   const categoryId1 = randomUUID()
-  //   const categoryId2 = randomUUID()
-  //   const categoryId3 = randomUUID()
-  //   const newCategories = [
-  //     {
-  //       id: categoryId1,
-  //       name: 'Food',
-  //       created_at: new Date(),
-  //       updated_at: new Date(),
-  //     },
-  //     {
-  //       id: categoryId2,
-  //       name: 'Sport',
-  //       created_at: new Date(),
-  //       updated_at: new Date(),
-  //     },
-  //     {
-  //       id: categoryId3,
-  //       name: 'Business',
-  //       created_at: new Date(),
-  //       updated_at: new Date(),
-  //     },
-  //   ]
-  //   categoriesRepository.categories.push(...newCategories)
-
-  //   const { transaction, categoriesOnTransactionsUpdatedAfterAddition } =
-  //     await getLastTransactionsByQtd.execute({
-  //       data: updateTransaction,
-  //       transactionId,
-  //       addCategoriesId: [categoryId1, categoryId2, categoryId3],
-  //     })
-
-  //   expect(transaction).toEqual(
-  //     expect.objectContaining({
-  //       id: expect.stringMatching(transactionId),
-  //       title: 'Transaction-updated',
-  //       type: 'OUTCOME',
-  //       amount_in_cents: 50000,
-  //       description: 'Transaction-updated',
-  //     }),
-  //   )
-
-  //   expect(categoriesOnTransactionsUpdatedAfterAddition).toEqual([
-  //     expect.objectContaining({
-  //       created_at: expect.any(Date),
-  //       updated_at: expect.any(Date),
-  //       category_id: expect.any(String),
-  //       transaction_id: expect.any(String),
-  //     }),
-  //     expect.objectContaining({
-  //       created_at: expect.any(Date),
-  //       updated_at: expect.any(Date),
-  //       category_id: expect.any(String),
-  //       transaction_id: expect.any(String),
-  //     }),
-  //     expect.objectContaining({
-  //       created_at: expect.any(Date),
-  //       updated_at: expect.any(Date),
-  //       category_id: expect.any(String),
-  //       transaction_id: expect.any(String),
-  //     }),
-  //   ])
-
-  //   const { categoriesOnTransactionsUpdatedAfterRemoval } =
-  //     await getLastTransactionsByQtd.execute({
-  //       transactionId,
-  //       removeCategoriesId: [categoryId1, categoryId2, categoryId3],
-  //     })
-
-  //   expect(categoriesOnTransactionsUpdatedAfterRemoval).toHaveLength(0)
-  // })
-
-  // it('should not be able to update a transaction without id', async () => {
-  //   transactionsRepository.transactions.push({
-  //     id: randomUUID(),
-  //     title: 'Transaction-1',
-  //     amount_in_cents: Math.round(100 * 100),
-  //     type: 'INCOME',
-  //     description: null,
-
-  //     user_id: randomUUID(),
-
-  //     created_at: new Date(),
-  //     updated_at: new Date(),
-  //   })
-
-  //   await expect(() =>
-  //     getLastTransactionsByQtd.execute({
-  //       transactionId: 'non-exists-id',
-  //     }),
-  //   ).rejects.toBeInstanceOf(ResourceNotFoundError)
-  // })
-
-  // it('should not be able to update a transaction categories without an array valid ids', async () => {
-  //   const transactionId = randomUUID()
-  //   transactionsRepository.transactions.push({
-  //     id: transactionId,
-  //     title: 'Transaction-1',
-  //     amount_in_cents: Math.round(100 * 100),
-  //     type: 'INCOME',
-  //     description: null,
-
-  //     user_id: randomUUID(),
-
-  //     created_at: new Date(),
-  //     updated_at: new Date(),
-  //   })
-
-  //   await expect(() =>
-  //     getLastTransactionsByQtd.execute({
-  //       transactionId,
-  //       addCategoriesId: ['non-exists-id', 'non-exists-id'],
-  //     }),
-  //   ).rejects.toBeInstanceOf(ResourceNotFoundError)
-  // })
-
-  // it('should not be able to add the same relation twice', async () => {
-  //   const transactionId = randomUUID()
-  //   transactionsRepository.transactions.push({
-  //     id: transactionId,
-  //     title: 'Transaction-1',
-  //     amount_in_cents: Math.round(100 * 100),
-  //     type: 'INCOME',
-  //     description: null,
-
-  //     user_id: randomUUID(),
-
-  //     created_at: new Date(),
-  //     updated_at: new Date(),
-  //   })
-
-  //   const categoryId1 = randomUUID()
-  //   const categoryId2 = randomUUID()
-  //   const categoryId3 = randomUUID()
-  //   const newCategories = [
-  //     {
-  //       id: categoryId1,
-  //       name: 'Food',
-  //       created_at: new Date(),
-  //       updated_at: new Date(),
-  //     },
-  //     {
-  //       id: categoryId2,
-  //       name: 'Sport',
-  //       created_at: new Date(),
-  //       updated_at: new Date(),
-  //     },
-  //     {
-  //       id: categoryId3,
-  //       name: 'Business',
-  //       created_at: new Date(),
-  //       updated_at: new Date(),
-  //     },
-  //   ]
-  //   categoriesRepository.categories.push(...newCategories)
-
-  //   await getLastTransactionsByQtd.execute({
-  //     transactionId,
-  //     addCategoriesId: [categoryId1, categoryId2, categoryId3],
-  //   })
-
-  //   await expect(() =>
-  //     getLastTransactionsByQtd.execute({
-  //       transactionId,
-  //       addCategoriesId: [categoryId1, categoryId2, categoryId3],
-  //     }),
-  //   ).rejects.toBeInstanceOf(RelationsAlreadyExistsError)
-  // })
+  it('should not be able to get last transactions by qtd provided without valid user id', async () => {
+    await expect(() =>
+      getLastTransactionsByQtd.execute({
+        userId: 'non-exists-id',
+        qtd: 10,
+      }),
+    ).rejects.toBeInstanceOf(ResourceNotFoundError)
+  })
 })
