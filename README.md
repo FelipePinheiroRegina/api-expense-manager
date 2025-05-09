@@ -17,7 +17,7 @@ spell-checker:disable
 - [x] deve ser possivel listar as 10 ultimas transactions
 - [x] deve ser possivel listar todas as transactions paginadas
 
-- [] deve ser possivel criar uma category
+- [x] deve ser possivel criar categorias
 - [] deve ser possivel listar todas categorias
 - [] deve ser possivel alterar uma category
 - [] deve ser possivel excluir uma category

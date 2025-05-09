@@ -21,4 +21,19 @@ export class InMemoryCategoriesRepository implements CategoriesRepository {
     this.categories.push(category)
     return category
   }
+
+  async createMany(data: CategoryCreateDTO[]) {
+    const createdCategories = data.map((categoryData) => {
+      const category: CategoryDTO = {
+        id: randomUUID(),
+        name: categoryData.name,
+        created_at: new Date(),
+        updated_at: new Date(),
+      }
+      this.categories.push(category)
+      return category
+    })
+
+    return createdCategories
+  }
 }
