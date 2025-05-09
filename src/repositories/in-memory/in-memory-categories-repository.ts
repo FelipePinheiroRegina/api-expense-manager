@@ -10,6 +10,12 @@ export class InMemoryCategoriesRepository implements CategoriesRepository {
     )
   }
 
+  async getAll() {
+    const categories = this.categories
+    const total = categories.length
+    return { categories, total }
+  }
+
   async create(data: CategoryCreateDTO) {
     const category: CategoryDTO = {
       id: randomUUID(),

@@ -1,6 +1,7 @@
 import { it, expect, describe, beforeEach } from 'vitest'
 import { InMemoryCategoriesRepository } from '@/repositories/in-memory/in-memory-categories-repository'
 import { CreateCategoryUseCase } from './create'
+import { InvalidParamsError } from '@/errors/invalid-params-error'
 
 let categoriesRepository: InMemoryCategoriesRepository
 let createCategoryUseCase: CreateCategoryUseCase
@@ -48,11 +49,30 @@ describe('Create Category Use Case', () => {
     })
 
     for (const category of categories) {
-      console.log(category)
       expect(category.name).toBe(category.name.trim())
       expect(category.name.charAt(0)).toBe(
         category.name.charAt(0).toUpperCase(),
       )
     }
+  })
+
+  it('should not be able to create categories with empty array/empty names inside array/names less than 2', async () => {
+    await expect(() =>
+      createCategoryUseCase.execute({
+        categories: [],
+      }),
+    ).rejects.toBeInstanceOf(InvalidParamsError)
+
+    await expect(() =>
+      createCategoryUseCase.execute({
+        categories: [{ name: '' }, { name: '     ' }, { name: '       ' }],
+      }),
+    ).rejects.toBeInstanceOf(InvalidParamsError)
+
+    await expect(() =>
+      createCategoryUseCase.execute({
+        categories: [{ name: 'ja' }, { name: 'va' }],
+      }),
+    ).rejects.toBeInstanceOf(InvalidParamsError)
   })
 })

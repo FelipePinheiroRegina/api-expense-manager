@@ -19,6 +19,12 @@ export class CreateCategoryUseCase {
       throw new InvalidParamsError()
     }
 
+    for (const { name } of categories) {
+      if (name.trim().length <= 2) {
+        throw new InvalidParamsError()
+      }
+    }
+
     categories = categories.map((category) => ({
       name: category.name
         .trim()
