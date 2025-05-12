@@ -42,4 +42,20 @@ export class InMemoryCategoriesRepository implements CategoriesRepository {
 
     return createdCategories
   }
+
+  async update(categoryId: string, data: CategoryCreateDTO) {
+    const categoryIndex = this.categories.findIndex(
+      (category) => category.id === categoryId,
+    )
+
+    const category = this.categories[categoryIndex]
+    const updatedCategory: CategoryDTO = {
+      ...category,
+      ...data,
+      updated_at: new Date(),
+    }
+
+    this.categories[categoryIndex] = updatedCategory
+    return updatedCategory
+  }
 }

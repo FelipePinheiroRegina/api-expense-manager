@@ -18,8 +18,8 @@ spell-checker:disable
 - [x] deve ser possivel listar todas as transactions paginadas
 
 - [x] deve ser possivel criar categorias
-- [] deve ser possivel listar todas categorias
-- [] deve ser possivel alterar uma category
+- [x] deve ser possivel listar todas categorias
+- [x] deve ser possivel alterar uma category
 - [] deve ser possivel excluir uma category
 
 - [] deve ser possivel ver o total de incomes/mes

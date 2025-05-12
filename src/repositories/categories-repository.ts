@@ -3,4 +3,5 @@ export interface CategoriesRepository {
   getAll(): Promise<{ categories: CategoryDTO[]; total: number } | null>
   create(data: CategoryCreateDTO): Promise<CategoryDTO>
   createMany(data: CategoryCreateDTO[]): Promise<CategoryDTO[]>
+  update(categoryId: string, data: CategoryCreateDTO): Promise<CategoryDTO>
 }
