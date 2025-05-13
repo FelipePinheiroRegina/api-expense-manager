@@ -4,4 +4,5 @@ export interface CategoriesRepository {
   create(data: CategoryCreateDTO): Promise<CategoryDTO>
   createMany(data: CategoryCreateDTO[]): Promise<CategoryDTO[]>
   update(categoryId: string, data: CategoryCreateDTO): Promise<CategoryDTO>
+  delete(categoryId: string): Promise<CategoryDTO>
 }

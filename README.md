@@ -20,7 +20,7 @@ spell-checker:disable
 - [x] deve ser possivel criar categorias
 - [x] deve ser possivel listar todas categorias
 - [x] deve ser possivel alterar uma category
-- [] deve ser possivel excluir uma category
+- [x] deve ser possivel excluir uma category
 
 - [] deve ser possivel ver o total de incomes/mes
 - [] deve ser possivel ver o total de outcomes/mes
