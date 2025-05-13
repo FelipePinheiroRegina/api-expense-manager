@@ -1,6 +1,5 @@
 import { TransactionsRepository } from '../transactions-repository'
 import { randomUUID } from 'node:crypto'
-
 export class InMemoryTransactionsRepository implements TransactionsRepository {
   public transactions: TransactionDTO[] = []
 
@@ -71,5 +70,25 @@ export class InMemoryTransactionsRepository implements TransactionsRepository {
     const index = this.transactions.findIndex((t) => t.id === transactionId)
     const [deletedTransaction] = this.transactions.splice(index, 1)
     return deletedTransaction
+  }
+
+  async sumUserIncomesByMonth(
+    userId: string,
+    date: { start: Date; end: Date },
+  ) {
+    const incomes = this.transactions.filter(
+      (t) =>
+        t.user_id === userId &&
+        t.type === 'INCOME' &&
+        t.created_at >= date.start &&
+        t.created_at <= date.end,
+    )
+
+    const incomesInCents = incomes.reduce(
+      (sum, income) => sum + income.amount_in_cents,
+      0,
+    )
+
+    return incomesInCents
   }
 }

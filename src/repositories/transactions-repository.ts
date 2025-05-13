@@ -22,4 +22,8 @@ export interface TransactionsRepository {
   ): Promise<FindAllByUserIdResponse | null>
 
   deleteById(transactionId: string): Promise<TransactionDTO>
+  sumUserIncomesByMonth(
+    userId: string,
+    date: { start: Date; end: Date },
+  ): Promise<number>
 }

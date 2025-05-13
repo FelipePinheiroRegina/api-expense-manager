@@ -22,7 +22,7 @@ spell-checker:disable
 - [x] deve ser possivel alterar uma category
 - [x] deve ser possivel excluir uma category
 
-- [] deve ser possivel ver o total de incomes/mes
+- [x] deve ser possivel ver o total de incomes/mes
 - [] deve ser possivel ver o total de outcomes/mes
 
 - [] deve ser possivel listar duas transactions e suas categorias com base no valor mais caro do mes atual e do mes anterior
