@@ -91,4 +91,24 @@ export class InMemoryTransactionsRepository implements TransactionsRepository {
 
     return incomesInCents
   }
+
+  async sumUserOutcomesByMonth(
+    userId: string,
+    date: { start: Date; end: Date },
+  ) {
+    const outcomes = this.transactions.filter(
+      (t) =>
+        t.user_id === userId &&
+        t.type === 'OUTCOME' &&
+        t.created_at >= date.start &&
+        t.created_at <= date.end,
+    )
+
+    const outcomesInCents = outcomes.reduce(
+      (sum, income) => sum + income.amount_in_cents,
+      0,
+    )
+
+    return outcomesInCents
+  }
 }

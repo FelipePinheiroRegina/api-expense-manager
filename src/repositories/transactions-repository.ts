@@ -26,4 +26,8 @@ export interface TransactionsRepository {
     userId: string,
     date: { start: Date; end: Date },
   ): Promise<number>
+  sumUserOutcomesByMonth(
+    userId: string,
+    date: { start: Date; end: Date },
+  ): Promise<number>
 }
