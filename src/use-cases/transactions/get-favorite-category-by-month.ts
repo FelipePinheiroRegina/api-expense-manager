@@ -4,17 +4,17 @@ import { CategoriesRepository } from '@/repositories/categories-repository'
 import { TransactionsRepository } from '@/repositories/transactions-repository'
 import { UsersRepository } from '@/repositories/users-repository'
 
-interface GetMostExpensiveTransactionByMonthUseCaseRequest {
+interface GetFavoriteCategoryByMonthUseCaseRequest {
   userId: string
   date: IntervalDate
 }
 
-interface GetMostExpensiveTransactionByMonthUseCaseResponse {
-  transaction: TransactionDTO | null
-  categories: CategoryDTO[]
+interface GetFavoriteCategoryByMonthUseCaseResponse {
+  name: string | null
+  outcomesInCents: number
 }
 
-export class GetMostExpensiveTransactionByMonthUseCase {
+export class GetFavoriteCategoryByMonthUseCase {
   constructor(
     private transactionsRepository: TransactionsRepository,
     private usersRepository: UsersRepository,
@@ -25,7 +25,7 @@ export class GetMostExpensiveTransactionByMonthUseCase {
   async execute({
     userId,
     date,
-  }: GetMostExpensiveTransactionByMonthUseCaseRequest): Promise<GetMostExpensiveTransactionByMonthUseCaseResponse> {
+  }: GetFavoriteCategoryByMonthUseCaseRequest): Promise<GetFavoriteCategoryByMonthUseCaseResponse> {
     const user = await this.usersRepository.findById(userId)
 
     if (!user) {
@@ -33,27 +33,24 @@ export class GetMostExpensiveTransactionByMonthUseCase {
     }
 
     const transaction =
-      await this.transactionsRepository.findMostOutcomeByMonth(userId, date)
+      await this.transactionsRepository.findAllOutcomesByMonth(userId, date)
 
     if (!transaction) {
       return {
-        transaction: null,
-        categories: [],
+        name: null,
+        outcomesInCents: 0,
       }
     }
 
+    const transactionsIds = transaction.map((transaction) => transaction.id)
+
     const categoriesOnTransactions =
-      await this.categoriesOnTransactionsRepository.findManyByTransactionId(
-        transaction.id,
+      await this.categoriesOnTransactionsRepository.findFavoriteByTransactionsIds(
+        transactionsIds,
       )
 
-    const categoriesIds = categoriesOnTransactions.map(
-      (item) => item.category_id,
-    )
+    console.log(categoriesOnTransactions)
 
-    const categories =
-      await this.categoriesRepository.findManyByIds(categoriesIds)
-
-    return { transaction, categories }
+    return { name: 'Food', outcomesInCents: 0 }
   }
 }

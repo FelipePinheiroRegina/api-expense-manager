@@ -106,7 +106,7 @@ export class InMemoryTransactionsRepository implements TransactionsRepository {
     return outcomesInCents
   }
 
-  async findMostByMonth(userId: string, date: IntervalDate) {
+  async findMostOutcomeByMonth(userId: string, date: IntervalDate) {
     const outcomes = this.transactions.filter(
       (t) =>
         t.user_id === userId &&
@@ -124,5 +124,17 @@ export class InMemoryTransactionsRepository implements TransactionsRepository {
     }, outcomes[0])
 
     return transaction
+  }
+
+  async findAllOutcomesByMonth(userId: string, date: IntervalDate) {
+    const outcomes = this.transactions.filter(
+      (t) =>
+        t.user_id === userId &&
+        t.type === 'OUTCOME' &&
+        t.created_at >= date.start &&
+        t.created_at <= date.end,
+    )
+
+    return outcomes ?? null
   }
 }

@@ -63,4 +63,20 @@ export class InMemoryCategoriesOnTransactionsRepository
       (c) => c.transaction_id === transactionId,
     )
   }
+
+  async findFavoriteByTransactionsIds(transactionsIds: string[]) {
+    const countsCategories = this.categoriesOnTransactions.reduce(
+      (acc, catOnTran) => {
+        if (transactionsIds.includes(catOnTran.transaction_id)) {
+          acc[catOnTran.category_id] = (acc[catOnTran.category_id] || 0) + 1
+        }
+
+        return acc
+      },
+      {} as Record<string, number>,
+    )
+
+    console.log(countsCategories)
+    return null
+  }
 }

@@ -18,10 +18,14 @@ export interface TransactionsRepository {
     page: number,
     pageSize: number,
   ): Promise<FindAllByUserIdResponse | null>
+  findAllOutcomesByMonth(
+    userId: string,
+    date: IntervalDate,
+  ): Promise<TransactionDTO[] | null>
   deleteById(transactionId: string): Promise<TransactionDTO>
   sumUserIncomesByMonth(userId: string, date: IntervalDate): Promise<number>
   sumUserOutcomesByMonth(userId: string, date: IntervalDate): Promise<number>
-  findMostByMonth(
+  findMostOutcomeByMonth(
     userId: string,
     date: IntervalDate,
   ): Promise<TransactionDTO | null>

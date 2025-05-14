@@ -12,6 +12,10 @@ export interface CategoriesOnTransactionsRepository {
     transactionId: string,
   ): Promise<CategoryOnTransactionDTO[]>
 
+  findFavoriteByTransactionsIds(
+    transactionsIds: string[],
+  ): Promise<CategoryOnTransactionDTO[]>
+
   deleteManyByTransactionIdAndCategoryId(
     data: CategoryOnTransactionCreateDTO[],
   ): Promise<CategoryOnTransactionDTO[] | null>
