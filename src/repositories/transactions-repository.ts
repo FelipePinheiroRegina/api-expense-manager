@@ -4,12 +4,10 @@ interface FindAllByUserIdResponse {
 }
 export interface TransactionsRepository {
   create(data: TransactionCreateDTO, userId: string): Promise<TransactionDTO>
-
   update(
     data: TransactionCreateDTO,
     transactionId: string,
   ): Promise<TransactionDTO>
-
   findById(transactionId: string): Promise<TransactionDTO | null>
   findByUserIdAndQtd(
     userId: string,
@@ -20,14 +18,11 @@ export interface TransactionsRepository {
     page: number,
     pageSize: number,
   ): Promise<FindAllByUserIdResponse | null>
-
   deleteById(transactionId: string): Promise<TransactionDTO>
-  sumUserIncomesByMonth(
+  sumUserIncomesByMonth(userId: string, date: IntervalDate): Promise<number>
+  sumUserOutcomesByMonth(userId: string, date: IntervalDate): Promise<number>
+  findMostByMonth(
     userId: string,
-    date: { start: Date; end: Date },
-  ): Promise<number>
-  sumUserOutcomesByMonth(
-    userId: string,
-    date: { start: Date; end: Date },
-  ): Promise<number>
+    date: IntervalDate,
+  ): Promise<TransactionDTO | null>
 }

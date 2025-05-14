@@ -8,6 +8,10 @@ export interface CategoriesOnTransactionsRepository {
     categoryId: string,
   ): Promise<CategoryOnTransactionDTO | null>
 
+  findManyByTransactionId(
+    transactionId: string,
+  ): Promise<CategoryOnTransactionDTO[]>
+
   deleteManyByTransactionIdAndCategoryId(
     data: CategoryOnTransactionCreateDTO[],
   ): Promise<CategoryOnTransactionDTO[] | null>

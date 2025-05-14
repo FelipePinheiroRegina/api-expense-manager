@@ -57,4 +57,10 @@ export class InMemoryCategoriesOnTransactionsRepository
 
     return this.categoriesOnTransactions
   }
+
+  async findManyByTransactionId(transactionId: string) {
+    return this.categoriesOnTransactions.filter(
+      (c) => c.transaction_id === transactionId,
+    )
+  }
 }

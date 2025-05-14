@@ -72,10 +72,7 @@ export class InMemoryTransactionsRepository implements TransactionsRepository {
     return deletedTransaction
   }
 
-  async sumUserIncomesByMonth(
-    userId: string,
-    date: { start: Date; end: Date },
-  ) {
+  async sumUserIncomesByMonth(userId: string, date: IntervalDate) {
     const incomes = this.transactions.filter(
       (t) =>
         t.user_id === userId &&
@@ -92,10 +89,7 @@ export class InMemoryTransactionsRepository implements TransactionsRepository {
     return incomesInCents
   }
 
-  async sumUserOutcomesByMonth(
-    userId: string,
-    date: { start: Date; end: Date },
-  ) {
+  async sumUserOutcomesByMonth(userId: string, date: IntervalDate) {
     const outcomes = this.transactions.filter(
       (t) =>
         t.user_id === userId &&
@@ -110,5 +104,25 @@ export class InMemoryTransactionsRepository implements TransactionsRepository {
     )
 
     return outcomesInCents
+  }
+
+  async findMostByMonth(userId: string, date: IntervalDate) {
+    const outcomes = this.transactions.filter(
+      (t) =>
+        t.user_id === userId &&
+        t.type === 'OUTCOME' &&
+        t.created_at >= date.start &&
+        t.created_at <= date.end,
+    )
+
+    if (outcomes.length === 0) return null
+
+    const transaction = outcomes.reduce((max, outcome) => {
+      return Math.abs(outcome.amount_in_cents) > Math.abs(max.amount_in_cents)
+        ? outcome
+        : max
+    }, outcomes[0])
+
+    return transaction
   }
 }

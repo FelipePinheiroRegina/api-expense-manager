@@ -5,25 +5,11 @@ import { InMemoryTransactionsRepository } from '@/repositories/in-memory/in-memo
 import { randomUUID } from 'node:crypto'
 import { ResourceNotFoundError } from '@/errors/resource-not-found-error'
 import dayjs from 'dayjs'
+import { months } from '@/utils/constants/months-js'
 
 let usersRepository: InMemoryUsersRepository
 let transactionsRepository: InMemoryTransactionsRepository
 let getOutcomesMonth: GetOutcomesMonthUseCase
-
-const months = {
-  January: 0,
-  February: 1,
-  March: 2,
-  April: 3,
-  May: 4,
-  June: 5,
-  July: 6,
-  August: 7,
-  September: 8,
-  October: 9,
-  November: 10,
-  December: 11,
-}
 
 describe('Get Outcomes Month Use Case', () => {
   beforeEach(() => {

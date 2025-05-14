@@ -25,7 +25,7 @@ spell-checker:disable
 - [x] deve ser possivel ver o total de incomes/mes
 - [x] deve ser possivel ver o total de outcomes/mes
 
-- [] deve ser possivel listar duas transactions e suas categorias com base no valor mais caro do mes atual e do mes anterior
+- [x] deve ser possivel listar a transaction (OUTCOME) e mais cara e suas categorias com base no mês
 
 - [] deve ser possivel listar a categoria favorita por exemplo.: se o usuario teve mais gastos com aquela categoria no mes é ela que deve aparecer trazendo o valor total gasto no mes e tambem trazer a categoria do mes passado e um comparativo percentual para mais ou menos
 

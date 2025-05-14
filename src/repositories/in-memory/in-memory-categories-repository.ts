@@ -67,4 +67,10 @@ export class InMemoryCategoriesRepository implements CategoriesRepository {
     const [category] = this.categories.splice(categoryIndex, 1)
     return category
   }
+
+  async findManyByIds(categoriesIds: string[]) {
+    return this.categories.filter((category) =>
+      categoriesIds.includes(category.id),
+    )
+  }
 }
