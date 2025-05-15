@@ -44,14 +44,45 @@ describe('Get Favorite Category By Month Use Case', () => {
       email: 'user@1.com',
     })
 
-    for (let c = 1; c <= 10; c++) {
+    const user2 = await usersRepository.register({
+      name: 'user-2',
+      email: 'user@2.com',
+    })
+
+    for (let c = 1; c <= 15; c++) {
+      if (c === 7) {
+        vi.setSystemTime(new Date(2025, months.December, 20, 8, 0, 0))
+      }
+
       transactionsRepository.transactions.push({
         id: randomUUID(),
-        title: `Transaction-${c}`,
-        amount_in_cents: (c + 50) * 100,
+        title: `Transaction ${c}`,
+        amount_in_cents: -(c * 100),
         type: 'OUTCOME',
         description: null,
         user_id: user.id,
+        created_at: new Date(),
+        updated_at: new Date(),
+      })
+
+      transactionsRepository.transactions.push({
+        id: randomUUID(),
+        title: `Transaction Income`,
+        amount_in_cents: c * 100,
+        type: 'INCOME',
+        description: null,
+        user_id: user.id,
+        created_at: new Date(),
+        updated_at: new Date(),
+      })
+
+      transactionsRepository.transactions.push({
+        id: randomUUID(),
+        title: `Transaction ${user.name}`,
+        amount_in_cents: -(c * 100),
+        type: 'OUTCOME',
+        description: null,
+        user_id: user2.id,
         created_at: new Date(),
         updated_at: new Date(),
       })
@@ -71,17 +102,31 @@ describe('Get Favorite Category By Month Use Case', () => {
       updated_at: new Date(),
     })
 
+    categoriesRepository.categories.push({
+      id: 'category-3',
+      name: 'Business',
+      created_at: new Date(),
+      updated_at: new Date(),
+    })
+
     const relation = transactionsRepository.transactions.map(
       (transaction, index) => {
-        if (index > 7) {
+        console.log(index + 1)
+        if (index + 1 > 15 && index + 1 <= 30) {
           return {
             transaction_id: transaction.id,
             category_id: 'category-2',
           }
+        } else if (index + 1 > 30) {
+          return {
+            transaction_id: transaction.id,
+            category_id: 'category-1',
+          }
         }
+
         return {
           transaction_id: transaction.id,
-          category_id: 'category-1',
+          category_id: 'category-3',
         }
       },
     )
@@ -99,7 +144,8 @@ describe('Get Favorite Category By Month Use Case', () => {
       },
     })
 
+    console.log(name, outcomesInCents)
     expect(name).toBe('Food')
-    expect(outcomesInCents).toBe(-100)
+    expect(outcomesInCents).toBe(-6500)
   })
 })

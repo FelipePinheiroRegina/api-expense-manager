@@ -32,25 +32,38 @@ export class GetFavoriteCategoryByMonthUseCase {
       throw new ResourceNotFoundError()
     }
 
-    const transaction =
+    const allTransactionsTypeOutcomes =
       await this.transactionsRepository.findAllOutcomesByMonth(userId, date)
 
-    if (!transaction) {
+    if (!allTransactionsTypeOutcomes) {
       return {
         name: null,
         outcomesInCents: 0,
       }
     }
 
-    const transactionsIds = transaction.map((transaction) => transaction.id)
+    const allTransactionsTypeOutcomesIds = allTransactionsTypeOutcomes.map(
+      (transaction) => transaction.id,
+    )
 
-    const categoriesOnTransactions =
+    const favorite =
       await this.categoriesOnTransactionsRepository.findFavoriteByTransactionsIds(
-        transactionsIds,
+        allTransactionsTypeOutcomesIds,
+        date,
       )
 
-    console.log(categoriesOnTransactions)
+    const favoriteTransactionsIds = favorite.relations.map(
+      (relation) => relation.transaction_id,
+    )
 
-    return { name: 'Food', outcomesInCents: 0 }
+    const [category, outcomesInCents] = await Promise.all([
+      this.categoriesRepository.findById(favorite.id),
+      this.transactionsRepository.sumOutcomesByTransactionsIdsAndMonth(
+        favoriteTransactionsIds,
+        date,
+      ),
+    ])
+
+    return { name: category?.name ?? '', outcomesInCents }
   }
 }

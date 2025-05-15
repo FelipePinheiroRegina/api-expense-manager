@@ -1,3 +1,8 @@
+export interface Favorite {
+  id: string
+  relations: CategoryOnTransactionDTO[]
+  count: number
+}
 export interface CategoriesOnTransactionsRepository {
   createMany(
     data: CategoryOnTransactionCreateDTO[],
@@ -14,7 +19,8 @@ export interface CategoriesOnTransactionsRepository {
 
   findFavoriteByTransactionsIds(
     transactionsIds: string[],
-  ): Promise<CategoryOnTransactionDTO[]>
+    date: IntervalDate,
+  ): Promise<Favorite>
 
   deleteManyByTransactionIdAndCategoryId(
     data: CategoryOnTransactionCreateDTO[],

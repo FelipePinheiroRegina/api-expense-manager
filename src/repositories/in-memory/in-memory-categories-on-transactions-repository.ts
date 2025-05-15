@@ -1,5 +1,7 @@
-import { CategoriesOnTransactionsRepository } from '../categories-on-transactions-repository'
-
+import {
+  CategoriesOnTransactionsRepository,
+  Favorite,
+} from '../categories-on-transactions-repository'
 export class InMemoryCategoriesOnTransactionsRepository
   implements CategoriesOnTransactionsRepository
 {
@@ -64,19 +66,44 @@ export class InMemoryCategoriesOnTransactionsRepository
     )
   }
 
-  async findFavoriteByTransactionsIds(transactionsIds: string[]) {
-    const countsCategories = this.categoriesOnTransactions.reduce(
-      (acc, catOnTran) => {
-        if (transactionsIds.includes(catOnTran.transaction_id)) {
-          acc[catOnTran.category_id] = (acc[catOnTran.category_id] || 0) + 1
-        }
-
-        return acc
-      },
-      {} as Record<string, number>,
+  async findFavoriteByTransactionsIds(
+    transactionsIds: string[],
+    date: IntervalDate,
+  ) {
+    const relations = this.categoriesOnTransactions.filter(
+      (relation) =>
+        relation.created_at > date.start && relation.created_at < date.end,
     )
 
-    console.log(countsCategories)
-    return null
+    const countRelations = relations.reduce<Favorite[]>((acc, catOnTran) => {
+      if (transactionsIds.includes(catOnTran.transaction_id)) {
+        const index = acc.findIndex((item) => item.id === catOnTran.category_id)
+
+        if (index !== -1) {
+          acc[index] = {
+            id: acc[index].id,
+            relations: [...acc[index].relations, catOnTran],
+            count: acc[index].count + 1,
+          }
+        } else {
+          acc.push({
+            id: catOnTran.category_id,
+            relations: [catOnTran],
+            count: 1,
+          })
+        }
+      }
+      return acc
+    }, [])
+
+    for (const relation of countRelations) {
+      console.log(relation)
+    }
+
+    const favorite = countRelations.reduce<Favorite>((max, current) => {
+      return current.count > max.count ? current : max
+    }, countRelations[0])
+
+    return favorite
   }
 }
