@@ -135,7 +135,7 @@ export class InMemoryTransactionsRepository implements TransactionsRepository {
         t.created_at <= date.end,
     )
 
-    return outcomes ?? null
+    return outcomes.length > 0 ? outcomes : null
   }
 
   async sumOutcomesByTransactionsIdsAndMonth(

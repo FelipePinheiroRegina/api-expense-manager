@@ -111,7 +111,6 @@ describe('Get Favorite Category By Month Use Case', () => {
 
     const relation = transactionsRepository.transactions.map(
       (transaction, index) => {
-        console.log(index + 1)
         if (index + 1 > 15 && index + 1 <= 30) {
           return {
             transaction_id: transaction.id,
@@ -144,8 +143,46 @@ describe('Get Favorite Category By Month Use Case', () => {
       },
     })
 
-    console.log(name, outcomesInCents)
     expect(name).toBe('Food')
     expect(outcomesInCents).toBe(-6500)
+  })
+
+  it('should not be able to get favorite category without valid userId', async () => {
+    const date = dayjs(new Date())
+    const start = date.startOf('month').toDate()
+    const end = date.endOf('month').subtract(1, 'day').toDate()
+
+    await expect(() =>
+      getFavoriteCategoryMonth.execute({
+        userId: 'non-exists-user',
+        date: {
+          start,
+          end,
+        },
+      }),
+    ).rejects.toBeInstanceOf(ResourceNotFoundError)
+  })
+
+  it('should be return {name: null, outcomeInCents: 0} if non exists transaction', async () => {
+    vi.setSystemTime(new Date(2025, months.January, 20, 8, 0, 0))
+    const user = await usersRepository.register({
+      name: 'user-1',
+      email: 'user@1.com',
+    })
+
+    const date = dayjs(new Date())
+    const start = date.startOf('month').toDate()
+    const end = date.endOf('month').subtract(1, 'day').toDate()
+
+    const { name, outcomesInCents } = await getFavoriteCategoryMonth.execute({
+      userId: user.id,
+      date: {
+        start,
+        end,
+      },
+    })
+
+    expect(name).toBe(null)
+    expect(outcomesInCents).toBe(0)
   })
 })

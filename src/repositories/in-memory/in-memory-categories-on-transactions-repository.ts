@@ -96,10 +96,6 @@ export class InMemoryCategoriesOnTransactionsRepository
       return acc
     }, [])
 
-    for (const relation of countRelations) {
-      console.log(relation)
-    }
-
     const favorite = countRelations.reduce<Favorite>((max, current) => {
       return current.count > max.count ? current : max
     }, countRelations[0])

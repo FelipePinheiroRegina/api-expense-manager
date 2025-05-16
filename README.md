@@ -26,7 +26,7 @@ spell-checker:disable
 - [x] deve ser possivel ver o total de outcomes/mes
 
 - [x] deve ser possivel listar a transaction (OUTCOME) e mais cara e suas categorias com base no mês
-- [] deve ser possivel listar a categoria que o usuario mais gastou (OUTCOME) e o valor total gasto com base no mês
+- [x] deve ser possivel listar a categoria que o usuario mais gastou (OUTCOME) e o valor total gasto com base no mês
 
 - [] deve ser possivel listar as transactions de acordo com um periodo por exemplo.: periodo de 7 dias; dentro destes sete dias listar apenas uma transaction em cada dia, filtrando pela mais cara do dia
 
