@@ -33,3 +33,5 @@ spell-checker:disable
 FIXME: - [] deve ser possivel listar as tres transaction mais caras e quantas transactios foi feito para essa categoria.
 
 FIXME: - [] deve ser possivel listar todas as transaction e a quantidade que eu ja de transactions que eu ja fiz para cada uma
+
+teste
